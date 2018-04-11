@@ -1,4 +1,4 @@
-package com.cosean.chat;
+package me.cosean.chat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

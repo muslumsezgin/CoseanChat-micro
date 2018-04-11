@@ -1,0 +1,8 @@
+server:
+  port: 9093
+  session:
+    timeout: 900
+  context-path: /api
+spring:
+  application.name: chat
+
