@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Objects;
 
 @CrossOrigin
@@ -33,21 +34,22 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/user/request/{ip2}")
+    @PostMapping("/user/request")
     @ResponseBody
-    public ResponseEntity addRequest(HttpServletRequest request, @PathVariable("ip2") String ip2) {
+    public ResponseEntity addRequest(HttpServletRequest request, @RequestBody Map <String ,String> ipMap) {
         String ip = request.getRemoteAddr();
-        if (OnlineSet.getInstance().contains(ip2))
-            return userService.request(ip,ip2);
+        User otherUser =UserMap.getInstance().get(ipMap.get("ip"));
+        if (OnlineSet.getInstance().contains(ipMap.get("ip"))&& !otherUser.getRequestSet().contains(ip))
+            return userService.request(ip,ipMap.get("ip"));
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/user/confirm/{ip2}")
+    @PostMapping("/user/confirm")
     @ResponseBody
-    public ResponseEntity addConfirm(HttpServletRequest request, @PathVariable("ip2") String ip2) {
+    public ResponseEntity addConfirm(HttpServletRequest request, @RequestBody Map <String ,String> ipMap) {
         String ip = request.getRemoteAddr();
-        if (UserMap.getInstance().get(ip).getPendingSet().contains(ip2))
-            return userService.confirm(ip,ip2);
+        if (UserMap.getInstance().get(ip).getPendingSet().contains(ipMap.get("ip")))
+            return userService.confirm(ip,ipMap.get("ip"));
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

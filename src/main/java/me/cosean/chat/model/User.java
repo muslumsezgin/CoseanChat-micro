@@ -8,14 +8,22 @@ public class User {
     private String nickName;
     private String profilePicture;
     private Set<String> pendingSet;
+    private Set<String> requestSet;
     private Set<String> confirmSet;
 
     public User() {
-        this.profilePicture = "https://geekyapar.com/wp-content/uploads/2014/10/Scarlett-Johansson-hot-in-white-shirt.jpg";
         this.pendingSet = new HashSet<>();
+        this.requestSet = new HashSet<>();
         this.confirmSet = new HashSet<>();
     }
 
+    public Set<String> getRequestSet() {
+        return requestSet;
+    }
+
+    public void setRequestSet(Set<String> requestSet) {
+        this.requestSet = requestSet;
+    }
 
     public String getNickName() {
         return nickName;
@@ -65,21 +73,26 @@ public class User {
         return this.confirmSet.remove(ip);
     }
 
+    public boolean addRequestSet(String ip){
+        return this.requestSet.add(ip);
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return
-                Objects.equals(nickName, user.nickName) &&
+        return Objects.equals(nickName, user.nickName) &&
                 Objects.equals(profilePicture, user.profilePicture) &&
                 Objects.equals(pendingSet, user.pendingSet) &&
+                Objects.equals(requestSet, user.requestSet) &&
                 Objects.equals(confirmSet, user.confirmSet);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(nickName, profilePicture, pendingSet, confirmSet);
+        return Objects.hash(nickName, profilePicture, pendingSet, requestSet, confirmSet);
     }
 }

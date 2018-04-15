@@ -11,9 +11,15 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     public ResponseEntity add(String ip, User aUser) {
+        User user = UserMap.getInstance().get(ip);
+        if(user != null){
+            aUser.setConfirmSet(user.getConfirmSet());
+            aUser.setRequestSet(user.getRequestSet());
+            aUser.setPendingSet(user.getPendingSet());
+        }
         UserMap.getInstance().put(ip, aUser);
         OnlineSet.getInstance().add(ip);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(ip,HttpStatus.OK);
     }
 
     public ResponseEntity delete(String ip) {
@@ -35,14 +41,18 @@ public class UserService {
     }
 
     public ResponseEntity request(String ip, String ip2){
-        boolean add = UserMap.getInstance().get(ip).addPendingSet(ip2);
-        if(add) return new ResponseEntity<>(HttpStatus.OK);
+        boolean add = UserMap.getInstance().get(ip).addRequestSet(ip2);
+        boolean addOwn = UserMap.getInstance().get(ip2).addPendingSet(ip);
+        if(add && addOwn && OnlineSet.getInstance().contains(ip2)) return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity confirm(String ip, String ip2){
-        boolean add = UserMap.getInstance().get(ip).addConfirmSet(ip2);
-        if(add) return new ResponseEntity<>(HttpStatus.OK);
+        boolean addOwn = UserMap.getInstance().get(ip).addConfirmSet(ip2);
+        boolean add = UserMap.getInstance().get(ip2).addConfirmSet(ip);
+        UserMap.getInstance().get(ip).getPendingSet().remove(ip2);
+        UserMap.getInstance().get(ip2).getRequestSet().remove(ip);
+        if(add&& addOwn && OnlineSet.getInstance().contains(ip2)) return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

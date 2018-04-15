@@ -5,4 +5,8 @@ server:
   context-path: /api
 spring:
   application.name: chat
+  http:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 

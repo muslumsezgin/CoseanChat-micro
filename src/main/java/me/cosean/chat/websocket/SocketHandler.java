@@ -11,11 +11,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 public class SocketHandler extends TextWebSocketHandler {
 
-
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         session.sendMessage(new TextMessage(OnlineSet.getInstance().toString()));
-        WebsocketList.getInstance().add(session);
     }
 
     @Override
@@ -30,6 +28,5 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         System.out.println(session.getId() + " you are disconnected ");
-        WebsocketList.getInstance().remove(session);
     }
 }
